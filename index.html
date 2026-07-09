@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>◈ nightfall ◈</title>
+<title>◈ cash's website ◈</title>
 <style>
   :root{
     --bg:#05030c;
@@ -128,14 +128,14 @@
 <div id="cursor"></div>
 
 <div id="gate">
-  <h1>NIGHTFALL</h1>
+  <h1>cash's website</h1>
   <div class="sub" id="gatesub"></div>
   <button id="enter">enter</button>
 </div>
 
 <main id="site">
   <header class="top">
-    <div class="brand">◈ nightfall ◈</div>
+    <div class="brand">◈ cash's website ◈</div>
   </header>
 
   <nav class="tabs">
@@ -152,12 +152,10 @@
     </div>
     <h2 class="head">welcome, wanderer.</h2>
     <div class="tagline" id="tagline"></div>
-    <p>this is my little corner of the void. a home for my thoughts, projects, and whatever else refuses to fit anywhere else. no algorithms, no feeds, no noise. just <em>me</em>.</p>
-    <p>make yourself comfortable. hover on things. click around. the site rewards curiosity.</p>
+    <p>hello i am <em>joe</em> and im the tf2 hvh king</p>
     <div class="grid">
-      <div class="card"><h3>◇ status</h3><p>online &amp; caffeinated</p></div>
-      <div class="card"><h3>◇ mood</h3><p>nocturnal</p></div>
-      <div class="card"><h3>◇ now playing</h3><p>something with too much bass</p></div>
+      <div class="card"><h3>◇ status</h3><p id="status">...</p></div>
+      <div class="card"><h3>◇ now playing</h3><p>TF2</p></div>
     </div>
   </section>
 
@@ -167,9 +165,7 @@
     <p>this is my personal website to let you know what i am doing, or to share dlls for tf2 ofc.</p>
     <div class="grid">
       <div class="card"><h3>◇ game</h3><p>tf2 hvh</p></div>
-      <div class="card"><h3>◇ rank</h3><p>#1 (northern is #2)</p></div>
       <div class="card"><h3>◇ i share</h3><p>dlls &amp; cfgs</p></div>
-      <div class="card"><h3>◇ status</h3><p>cracked</p></div>
     </div>
   </section>
 
@@ -178,13 +174,9 @@
     <p>occasional writing. newest first.</p>
     <div class="entry">
       <div class="date">2026 · 07 · 09</div>
-      <h3>i built a website in the dark</h3>
-      <p>a first entry, on why i wanted a home that glows instead of a profile that sells. more to come.</p>
-    </div>
-    <div class="entry">
-      <div class="date">2026 · 07 · 01</div>
-      <h3>notes to no one</h3>
-      <p>placeholder entry. swap this out with your real thoughts whenever the mood strikes.</p>
+      <h3>my dll</h3>
+      <p>this is my nitro remake for tf2 obviously its very shit but good prediction and shit</p>
+      <p><a href="https://files.catbox.moe/1rdrqp.dll">download</a></p>
     </div>
   </section>
 
@@ -267,6 +259,26 @@
   var nyEl = document.getElementById('nytime');
   function updNY(){ nyEl.textContent = nyTime(); }
   updNY(); setInterval(updNY, 1000);
+
+  var BIN_ID = '6a4f5cb7f5f4af5e297640e4';
+  var READ_KEY = '$2a$10$NpUoAbjj8uW8ZXY8CCG/i.U18nyqys98S/dDHPCWk5kgsQMpw3j6K';
+  var statusEl = document.getElementById('status');
+  function setStatus(s){
+    if(s === 'online'){
+      statusEl.innerHTML = '<span style="color:#59f0a0;text-shadow:0 0 8px #59f0a0">&#9679;</span> online';
+    } else if(s === 'offline'){
+      statusEl.innerHTML = '<span style="color:#7a4bb8">&#9679;</span> offline';
+    } else {
+      statusEl.textContent = '...';
+    }
+  }
+  function fetchStatus(){
+    fetch('https://api.jsonbin.io/v3/b/' + BIN_ID + '/latest', { headers:{ 'X-Access-Key':READ_KEY } })
+      .then(function(r){ return r.json(); })
+      .then(function(d){ setStatus(d.record && d.record.status); })
+      .catch(function(){ setStatus('offline'); });
+  }
+  fetchStatus(); setInterval(fetchStatus, 30000);
   document.getElementById('year').textContent = new Date().getFullYear();
 
   document.getElementById('enter').addEventListener('click', function(){
