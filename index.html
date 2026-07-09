@@ -189,7 +189,7 @@
     </div>
   </section>
 
-  <footer>▚ made in the dark · <span id="year"></span> ▞</footer>
+  <footer>▚ owning in hvh..lol (northern loses btw) ▞</footer>
 </main>
 
 <script>
@@ -243,11 +243,10 @@
       else { del=false; pi=(pi+1)%phrases.length; setTimeout(step, 300); }
     })();
   }
-  typer(document.getElementById('gatesub'), ['a personal void','handmade · human · glowing'], 70);
   typer(document.getElementById('tagline'), [
-    '> exploring the quiet parts of the internet_',
-    '> building small worlds after dark_',
-    '> no feeds. no noise. just this._'
+    '> elder god heavying it 24/7 like damn_',
+    '> playing tf2 24/7 cus i can_',
+    '> mgeing 24/7 cus i can_'
   ], 45);
 
   function nyTime(){
@@ -279,7 +278,6 @@
       .catch(function(){ setStatus('offline'); });
   }
   fetchStatus(); setInterval(fetchStatus, 30000);
-  document.getElementById('year').textContent = new Date().getFullYear();
 
   document.getElementById('enter').addEventListener('click', function(){
     document.getElementById('gate').classList.add('gone');
