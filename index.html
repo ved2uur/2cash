@@ -2,380 +2,285 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=1100">
-<title>UNTAMEABLE INSATIABLE</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>◈ nightfall ◈</title>
 <style>
-  * { box-sizing: border-box; }
-  html, body {
-    margin: 0; padding: 0;
-    background: #d8d8d8;
-    font-family: "Courier New", Courier, monospace;
-    font-size: 13px;
-    color: #111;
+  :root{
+    --bg:#05030c;
+    --bg2:#0b0616;
+    --pur:#b46cff;
+    --pur-bright:#e0b6ff;
+    --pur-dim:#7a4bb8;
+    --pur-deep:#3a1e63;
+    --glow:0 0 8px #b46cff, 0 0 18px #8a4bd8, 0 0 34px #6a2bb8;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{ height:100%; }
+  body{
+    background:radial-gradient(circle at 50% 0%, #150a26 0%, var(--bg) 55%, #020106 100%);
+    color:var(--pur);
+    font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;
+    overflow-x:hidden;
+    cursor:none;
+  }
+  a{ color:var(--pur); text-decoration:none; }
+
+  #stars{ position:fixed; inset:0; z-index:0; }
+
+  #cursor{
+    position:fixed; top:0; left:0; width:26px; height:26px; margin:-13px 0 0 -13px;
+    border-radius:50%; pointer-events:none; z-index:9999;
+    background:radial-gradient(circle, rgba(224,182,255,.9) 0%, rgba(180,108,255,.35) 40%, transparent 70%);
+    mix-blend-mode:screen; transition:width .15s, height .15s;
+  }
+  #cursor.big{ width:46px; height:46px; margin:-23px 0 0 -23px; }
+
+  #gate{
+    position:fixed; inset:0; z-index:100;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    background:radial-gradient(circle at 50% 45%, #180b2e 0%, #05030c 70%);
+    text-align:center; transition:opacity .8s ease, visibility .8s;
+  }
+  #gate.gone{ opacity:0; visibility:hidden; }
+  #gate h1{
+    font-size:clamp(40px,9vw,96px); letter-spacing:.14em; font-weight:800;
+    color:#fff; text-shadow:var(--glow);
+    animation:pulse 2.6s ease-in-out infinite;
+  }
+  #gate .sub{ margin-top:14px; letter-spacing:.35em; font-size:13px; color:var(--pur-dim);
+    text-transform:uppercase; min-height:18px; }
+  #enter{
+    margin-top:46px; font:inherit; font-size:15px; letter-spacing:.3em; text-transform:uppercase;
+    color:var(--pur-bright); background:transparent; border:1px solid var(--pur-dim);
+    padding:14px 42px; cursor:none; position:relative; overflow:hidden;
+    transition:color .3s, border-color .3s, box-shadow .3s, letter-spacing .3s;
+  }
+  #enter:hover{ color:#fff; border-color:var(--pur); box-shadow:var(--glow); letter-spacing:.42em; }
+
+  @keyframes pulse{
+    0%,100%{ text-shadow:0 0 6px #b46cff,0 0 16px #8a4bd8,0 0 30px #6a2bb8; }
+    50%{ text-shadow:0 0 14px #d9a6ff,0 0 30px #b46cff,0 0 60px #8a4bd8; }
   }
 
-  /* faint decorative swirls on the far right, like the screenshots */
-  body::after {
-    content: "";
-    position: fixed;
-    top: 0; right: 0; bottom: 0;
-    width: 120px;
-    pointer-events: none;
-    background:
-      radial-gradient(circle at 140% 18%, transparent 60px, #c9c9c9 61px, transparent 64px),
-      radial-gradient(circle at 150% 55%, transparent 40px, #c9c9c9 41px, transparent 44px),
-      radial-gradient(circle at 130% 88%, transparent 70px, #c9c9c9 71px, transparent 74px);
-    opacity: .8;
-    z-index: 0;
-  }
+  #site{ position:relative; z-index:2; opacity:0; transition:opacity 1s ease; max-width:900px; margin:0 auto; padding:26px 22px 80px; }
+  #site.show{ opacity:1; }
 
-  .wrap { display: flex; min-height: 100vh; position: relative; z-index: 1; }
+  header.top{ display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:12px;
+    border-bottom:1px solid var(--pur-deep); padding-bottom:14px; }
+  .brand{ font-size:26px; font-weight:800; letter-spacing:.12em; color:#fff; text-shadow:var(--glow);
+    animation:pulse 3.4s ease-in-out infinite; }
 
-  /* ---------- SIDEBAR ---------- */
-  .sidebar {
-    width: 116px;
-    flex: 0 0 116px;
-    background: #111;
-    color: #eee;
-    padding: 10px 8px 20px;
-    border-right: 2px solid #000;
+  .timebox{
+    display:inline-block; border:2px dotted var(--pur); padding:11px 18px; margin-bottom:26px;
+    font-family:"Consolas","Courier New",monospace; font-style:italic; color:var(--pur-bright);
+    background:rgba(120,60,200,.05); box-shadow:0 0 14px rgba(180,108,255,.25);
   }
-  .sidebar .sect { font-weight: bold; margin: 12px 0 3px; color: #fff; }
-  .sidebar .sect:first-child { margin-top: 0; }
-  .sidebar a {
-    display: block;
-    color: #cfcfe6;
-    text-decoration: underline;
-    padding: 1px 0 1px 6px;
-    line-height: 1.5;
-  }
-  .sidebar a:hover { color: #fff; background: #333; }
-  .sidebar a.active { color: #fff; background: #2a2a2a; }
-  .pixelbadge {
-    margin-top: 22px;
-    height: 16px;
-    background:
-      repeating-linear-gradient(90deg,#444 0 2px,#777 2px 4px,#222 4px 6px,#999 6px 8px);
-    border: 1px solid #555;
-    filter: contrast(1.2);
-  }
+  .timebox .lbl{ display:block; font-weight:bold; letter-spacing:.04em; margin-bottom:9px; }
+  .timebox .val{ display:block; font-size:21px; text-shadow:0 0 9px var(--pur-dim); }
 
-  /* ---------- MAIN ---------- */
-  .main {
-    flex: 1;
-    background: #ededed;
-    padding: 8px 40px 40px 12px;
-    min-width: 0;
+  nav.tabs{ display:flex; flex-wrap:wrap; gap:6px; margin:18px 0 26px; }
+  nav.tabs button{
+    font:inherit; font-size:13px; letter-spacing:.18em; text-transform:uppercase;
+    background:transparent; color:var(--pur-dim); border:1px solid transparent;
+    padding:8px 16px; cursor:none; transition:all .25s;
   }
+  nav.tabs button:hover{ color:var(--pur-bright); text-shadow:0 0 8px var(--pur); }
+  nav.tabs button.active{ color:#fff; border-color:var(--pur-deep);
+    box-shadow:inset 0 0 12px rgba(180,108,255,.15), 0 0 10px rgba(180,108,255,.25); }
 
-  .banner {
-    background: #111;
-    color: #fff;
-    text-align: center;
-    font-family: "Arial Narrow", Impact, "Haettenschweiler", sans-serif;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-size: 26px;
-    padding: 5px 0;
-    margin-bottom: 12px;
-  }
-  .banner.lower { margin: 22px 0 0; }
-  .banner.small { font-size: 22px; }
+  section.page{ display:none; animation:rise .6s ease both; line-height:1.7; }
+  section.page.show{ display:block; }
+  @keyframes rise{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:none; } }
 
-  /* top row of boxes (home) */
-  .topboxes { display: flex; gap: 10px; margin-bottom: 14px; }
-  .box {
-    border: 1px solid #999;
-    background: #f6f6f6;
-    padding: 7px 9px;
-    box-shadow: 2px 2px 0 #bbb;
-  }
-  .box .lbl { color: #555; margin-bottom: 5px; }
-  .box.time { flex: 0 0 210px; }
-  .box.rss  { flex: 1; }
-  .box.mini { flex: 1; }
+  h2.head{ font-size:30px; color:#fff; text-shadow:var(--glow); letter-spacing:.06em; margin-bottom:8px; }
+  .tagline{ color:var(--pur-bright); font-size:15px; letter-spacing:.1em; min-height:22px; margin-bottom:22px;
+    font-family:"Consolas",monospace; }
+  p{ margin-bottom:16px; color:#cdaef0; }
+  em{ color:var(--pur-bright); font-style:normal; text-shadow:0 0 8px var(--pur-dim); }
 
-  .clock { font-size: 30px; font-weight: bold; letter-spacing: 1px; line-height: 1; }
-  .clockdate { color: #333; margin-top: 4px; font-size: 12px; }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin:20px 0; }
+  .card{ border:1px solid var(--pur-deep); padding:16px; background:rgba(120,60,200,.05);
+    transition:all .3s; }
+  .card:hover{ border-color:var(--pur); box-shadow:0 0 18px rgba(180,108,255,.25); transform:translateY(-3px); }
+  .card h3{ color:#fff; font-size:15px; margin-bottom:6px; letter-spacing:.08em; }
+  .card p{ font-size:13px; color:var(--pur-dim); margin:0; }
 
-  .rss a { color: #1a1aff; font-weight: bold; text-decoration: underline; font-size: 16px; }
-  .mini .navdate { text-align: right; color: #666; margin-top: 6px; letter-spacing: 1px; }
+  .entry{ border-left:2px solid var(--pur-deep); padding:4px 0 4px 18px; margin-bottom:24px;
+    transition:border-color .3s; }
+  .entry:hover{ border-color:var(--pur); }
+  .entry .date{ font-family:"Consolas",monospace; font-size:11px; letter-spacing:.15em; color:var(--pur-dim); }
+  .entry h3{ color:#fff; font-size:19px; margin:4px 0 6px; }
 
-  /* intro block with avatar */
-  .intro { display: flex; gap: 18px; align-items: flex-start; padding: 6px 4px; }
-  .avatar {
-    flex: 0 0 auto;
-    width: 100px; height: 150px;
-    border: 1px solid #888;
-    background: #cfd3da;
-    display: block;
-  }
-  .intro p { margin: 0 0 12px; line-height: 1.55; }
-  .intro em { color: #444; }
+  .links{ display:flex; flex-wrap:wrap; gap:12px; margin-top:10px; }
+  .links a{ border:1px solid var(--pur-deep); padding:10px 20px; letter-spacing:.14em; font-size:13px;
+    text-transform:lowercase; transition:all .25s; }
+  .links a:hover{ color:#fff; border-color:var(--pur); box-shadow:var(--glow); background:rgba(180,108,255,.08); }
 
-  .visitors { text-align: center; margin: 26px 0 14px; }
+  footer{ margin-top:50px; padding-top:16px; border-top:1px solid var(--pur-deep);
+    font-size:11px; letter-spacing:.2em; color:var(--pur-deep); text-align:center; text-transform:uppercase; }
 
-  /* 88x31 buttons */
-  .buttons { display: flex; gap: 5px; justify-content: center; flex-wrap: wrap; margin: 6px 0 4px; }
-  .btn88 {
-    width: 88px; height: 31px;
-    border: 1px solid #000;
-    font-family: Arial, sans-serif;
-    font-size: 8px; font-weight: bold;
-    color: #fff; text-align: center;
-    display: flex; align-items: center; justify-content: center;
-    text-transform: uppercase; letter-spacing: .3px;
-    line-height: 1.1; padding: 0 2px; overflow: hidden;
-    text-shadow: 1px 1px 0 #000;
-  }
-
-  /* about page */
-  .worldbtn {
-    display: inline-block;
-    border: 1px solid #999; background: #e2e2e2;
-    padding: 3px 10px; font-size: 11px;
-    box-shadow: inset 1px 1px 0 #fff, 1px 1px 0 #aaa;
-    float: right; margin: 4px 0 10px;
-  }
-  details {
-    border-bottom: 1px dotted #999;
-    padding: 6px 2px;
-  }
-  details summary {
-    cursor: pointer; list-style: none;
-    font-size: 17px; font-weight: bold;
-    font-family: "Courier New", monospace;
-  }
-  details summary::-webkit-details-marker { display: none; }
-  details summary::before { content: "\25B6  "; font-size: 12px; }
-  details[open] summary::before { content: "\25BC  "; }
-  details .body { padding: 8px 4px 4px 22px; line-height: 1.55; }
-  details ul { margin: 6px 0; padding-left: 20px; }
-
-  /* blog page */
-  .blogintro { line-height: 1.55; margin: 4px 4px 16px; }
-  .blogintro em { color: #555; }
-  .entry {
-    border: 1px dashed #333;
-    padding: 10px 12px;
-    margin: 0 4px 16px;
-    background: #f4f4f4;
-  }
-  .entry h3 { margin: 0 0 2px; font-size: 16px; }
-  .entry .date { color: #444; margin-bottom: 6px; }
-  .entry p { margin: 0; line-height: 1.5; }
-  .rssbtn {
-    display: flex; align-items: center; gap: 6px;
-    width: fit-content; margin: 0 auto;
-    border: 1px solid #888; background: #eee;
-    padding: 4px 12px; box-shadow: 1px 1px 0 #aaa;
-  }
-  .rssbtn .ico {
-    width: 16px; height: 16px; border-radius: 3px;
-    background: #ff8000;
-    background-image:
-      radial-gradient(circle at 3px 13px, #fff 2px, transparent 2.5px),
-      radial-gradient(circle at 3px 13px, transparent 4px, #fff 4px 5px, transparent 5.5px),
-      radial-gradient(circle at 3px 13px, transparent 7px, #fff 7px 8px, transparent 8.5px);
-  }
-
-  .page { display: none; }
-  .page.show { display: block; }
-
-  a.tlink { color: #1a1aff; }
+  @media (max-width:520px){ body{ cursor:auto; } #cursor{ display:none; } nav.tabs button{ padding:7px 11px; } }
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <!-- ================= SIDEBAR ================= -->
-  <nav class="sidebar">
-    <div class="sect">navigation:</div>
-    <a href="#" data-page="home">landing</a>
-    <a href="#" data-page="about">about</a>
-    <a href="#" data-page="stub">contact</a>
-    <a href="#" data-page="stub">credits</a>
+<canvas id="stars"></canvas>
+<div id="cursor"></div>
 
-    <div class="sect">musings:</div>
-    <a href="#" data-page="blog">blog</a>
-    <a href="#" data-page="stub">guides</a>
-    <a href="#" data-page="stub">resources</a>
-    <a href="#" data-page="stub">setup specs</a>
-
-    <div class="sect">creativity:</div>
-    <a href="#" data-page="stub">characters</a>
-    <a href="#" data-page="stub">art</a>
-    <a href="#" data-page="stub">commissions</a>
-
-    <div class="sect">fun stuff:</div>
-    <a href="#" data-page="stub">graphics</a>
-    <a href="#" data-page="stub">guestbook</a>
-    <a href="#" data-page="stub">drawbox</a>
-    <a href="#" data-page="stub">thebestsite</a>
-
-    <div class="pixelbadge"></div>
-  </nav>
-
-  <!-- ================= MAIN ================= -->
-  <main class="main">
-
-    <!-- ---------- HOME ---------- -->
-    <section class="page show" id="home">
-      <div class="banner">Untameable&nbsp;&nbsp;&nbsp;Insatiable</div>
-
-      <div class="topboxes">
-        <div class="box time">
-          <div class="lbl">my current time is...</div>
-          <div class="clock" id="clock">00:00:00</div>
-          <div class="clockdate" id="clockdate">&nbsp;</div>
-        </div>
-        <div class="box rss">
-          <div class="lbl">latest RSS post:</div>
-          <a href="#" data-page="blog">morals and parasocialites</a>
-          <div style="margin-top:6px;">talking about parasocialism in relation to ...</div>
-        </div>
-        <div class="box mini">
-          <div class="lbl">miniblog entries:</div>
-          <div>i rlly want a dj controller would anyone accept art/website work for one? (new or used) contact me if u would...</div>
-          <div class="navdate">&laquo; 2026-07-01 &raquo;</div>
-        </div>
-      </div>
-
-      <div class="intro">
-        <div class="avatar" aria-label="webmaster avatar"></div>
-        <div>
-          <p>welcome! i'm the webmaster <em>(it/its)</em> and i have no set name. feel free to name me anything you'd like; i've been here a long 17 years and i'm androgyne flavored, with a sprinkle of schrodinger's tranny for taste. anti-puritan, pro-autonomy, minarchist, no perfect victims, and here to party.</p>
-          <p>this website was created to serve as a home for my projects, opinions, and tools/resources that couldn't fit into social media. what you won't find here is any AI content, corpoganda, or algorithmic feeds that rot your brain.</p>
-        </div>
-      </div>
-
-      <div class="visitors"><span id="visitors">2</span> visitors online</div>
-
-      <div class="buttons">
-        <div class="btn88" style="background:#333;">Best viewed<br>on desktop</div>
-        <div class="btn88" style="background:#c00;">Click<br>here!</div>
-        <div class="btn88" style="background:#006;">Anti<br>NFT</div>
-        <div class="btn88" style="background:#080;">Made with<br>♥ &amp; html</div>
-        <div class="btn88" style="background:#404;">LAD/X</div>
-        <div class="btn88" style="background:#e60;color:#000;text-shadow:none;">FIREFOX<br>get it</div>
-      </div>
-
-      <div class="banner lower small">...and roaming around your area 24/7.</div>
-    </section>
-
-    <!-- ---------- ABOUT ---------- -->
-    <section class="page" id="about">
-      <div class="banner">life is unfair,</div>
-
-      <div class="intro">
-        <div class="avatar" style="background:#3a3540;" aria-label="about avatar"></div>
-        <div>
-          <p>i go by <em>any name</em>, so feel free to get creative. born in Florida back in '08, i've been haunting various cities across the state ever since <em>(though i'm soon to be relocated to Pittsburgh!)</em> i'm a highschool graduate with various certifications in digital design. i take great interest in art, animation, internet archival, web development, EDM music, and arcade rhythm games. currently, i'm obsessed with the song <a class="tlink" href="#">gallery piece</a> by Of Montreal. one of my favorite things to do is sit outside with my bong and listen to music as i smoke.</p>
-        </div>
-      </div>
-
-      <div class="worldbtn">! WORLD IS A FUCK</div>
-      <div style="clear:both;"></div>
-
-      <details>
-        <summary>::tl;dr</summary>
-        <div class="body">androgyne, it/its, born '08 in FL, soon → Pittsburgh. digital design certs. into art, animation, web dev, EDM, rhythm games. touch grass enjoyer.</div>
-      </details>
-      <details>
-        <summary>::interests</summary>
-        <div class="body">
-          <ul>
-            <li>internet archival &amp; the old web</li>
-            <li>web development / html + css</li>
-            <li>EDM &amp; arcade rhythm games</li>
-            <li>animation &amp; illustration</li>
-          </ul>
-        </div>
-      </details>
-      <details>
-        <summary>::favorite songs</summary>
-        <div class="body">
-          <ul>
-            <li>gallery piece &mdash; Of Montreal</li>
-            <li>(add your own here)</li>
-          </ul>
-        </div>
-      </details>
-      <details>
-        <summary>::history</summary>
-        <div class="body">a little corner of the web that's been around, in one form or another, for a long 17 years. rebuilt from scratch more times than i can count.</div>
-      </details>
-
-      <div class="buttons" style="margin-top:22px;">
-        <div class="btn88" style="background:linear-gradient(90deg,#f00,#ff0,#0f0,#0ff,#00f,#f0f);color:#000;text-shadow:none;">rainbow</div>
-        <div class="btn88" style="background:#c0c;">web<br>ring</div>
-        <div class="btn88" style="background:#530;">arcade</div>
-        <div class="btn88" style="background:#036;">counter<br>strike</div>
-        <div class="btn88" style="background:#460;">of<br>montreal</div>
-      </div>
-
-      <div class="banner lower small">kill yourself or get over it.</div>
-    </section>
-
-    <!-- ---------- BLOG ---------- -->
-    <section class="page" id="blog">
-      <div class="banner">Blog Entries</div>
-
-      <p class="blogintro">little articles about my life, opinions, and occasional site updates. entries often contain music <em>(lovingly called entry themes)</em> and images, newest entries are shown first. subscribe to my RSS feed <a class="tlink" href="#">here</a>!</p>
-
-      <div class="entry">
-        <h3>morals and parasocialites</h3>
-        <div class="date">Wed, 17 Jun 2026 18:33:00 -0400</div>
-        <p>talking about parasocialism in relation to problematic furry artists, and some of my thoughts. more so just me rambling for a first blog entry than anything meaningful. includes some art i did about the subject.</p>
-      </div>
-
-      <div class="rssbtn"><span class="ico"></span> RSS Feed</div>
-
-      <div class="banner lower small">DON'T LIKE? DON'T READ!</div>
-    </section>
-
-    <!-- ---------- STUB (other nav links) ---------- -->
-    <section class="page" id="stub">
-      <div class="banner">under construction</div>
-      <p style="text-align:center; padding:40px 0;">this page isn't built yet &mdash; check back soon! &#9203;</p>
-      <div class="banner lower small">be patient, gremlin.</div>
-    </section>
-
-  </main>
+<div id="gate">
+  <h1>NIGHTFALL</h1>
+  <div class="sub" id="gatesub"></div>
+  <button id="enter">enter</button>
 </div>
 
+<main id="site">
+  <header class="top">
+    <div class="brand">◈ nightfall ◈</div>
+  </header>
+
+  <nav class="tabs">
+    <button data-tab="home" class="active">home</button>
+    <button data-tab="about">about</button>
+    <button data-tab="blog">blog</button>
+    <button data-tab="links">links</button>
+  </nav>
+
+  <section class="page show" id="home">
+    <div class="timebox">
+      <span class="lbl">my time currently is:</span>
+      <span class="val" id="nytime">--:--:-- a.m.</span>
+    </div>
+    <h2 class="head">welcome, wanderer.</h2>
+    <div class="tagline" id="tagline"></div>
+    <p>this is my little corner of the void. a home for my thoughts, projects, and whatever else refuses to fit anywhere else. no algorithms, no feeds, no noise. just <em>me</em>.</p>
+    <p>make yourself comfortable. hover on things. click around. the site rewards curiosity.</p>
+    <div class="grid">
+      <div class="card"><h3>◇ status</h3><p>online &amp; caffeinated</p></div>
+      <div class="card"><h3>◇ mood</h3><p>nocturnal</p></div>
+      <div class="card"><h3>◇ now playing</h3><p>something with too much bass</p></div>
+    </div>
+  </section>
+
+  <section class="page" id="about">
+    <h2 class="head">about me</h2>
+    <p>hello! my name is <em>joe</em>, currently i am the best tf2 hvh player right now. below me is northern ofc.</p>
+    <p>this is my personal website to let you know what i am doing, or to share dlls for tf2 ofc.</p>
+    <div class="grid">
+      <div class="card"><h3>◇ game</h3><p>tf2 hvh</p></div>
+      <div class="card"><h3>◇ rank</h3><p>#1 (northern is #2)</p></div>
+      <div class="card"><h3>◇ i share</h3><p>dlls &amp; cfgs</p></div>
+      <div class="card"><h3>◇ status</h3><p>cracked</p></div>
+    </div>
+  </section>
+
+  <section class="page" id="blog">
+    <h2 class="head">transmissions</h2>
+    <p>occasional writing. newest first.</p>
+    <div class="entry">
+      <div class="date">2026 · 07 · 09</div>
+      <h3>i built a website in the dark</h3>
+      <p>a first entry, on why i wanted a home that glows instead of a profile that sells. more to come.</p>
+    </div>
+    <div class="entry">
+      <div class="date">2026 · 07 · 01</div>
+      <h3>notes to no one</h3>
+      <p>placeholder entry. swap this out with your real thoughts whenever the mood strikes.</p>
+    </div>
+  </section>
+
+  <section class="page" id="links">
+    <h2 class="head">find me elsewhere</h2>
+    <p>the tendrils of the web. <em>(replace these hrefs with your real profiles.)</em></p>
+    <div class="links">
+      <a href="#">github</a>
+      <a href="#">spotify</a>
+    </div>
+  </section>
+
+  <footer>▚ made in the dark · <span id="year"></span> ▞</footer>
+</main>
+
 <script>
-  // ----- live clock -----
-  function pad(n){ return String(n).padStart(2,'0'); }
-  var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  var mons = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  function tick(){
-    var d = new Date();
-    document.getElementById('clock').textContent =
-      pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());
-    document.getElementById('clockdate').textContent =
-      days[d.getDay()]+', '+mons[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear()+' ET';
+  var cur = document.getElementById('cursor');
+  var cx=innerWidth/2, cy=innerHeight/2, tx=cx, ty=cy;
+  addEventListener('mousemove', function(e){ tx=e.clientX; ty=e.clientY; });
+  document.addEventListener('mouseover', function(e){
+    if(e.target.closest('button,a,.card')) cur.classList.add('big'); else cur.classList.remove('big');
+  });
+  (function follow(){
+    cx += (tx-cx)*0.2; cy += (ty-cy)*0.2;
+    cur.style.transform = 'translate('+cx+'px,'+cy+'px)';
+    requestAnimationFrame(follow);
+  })();
+
+  var cv = document.getElementById('stars'), ctx = cv.getContext('2d'), pts=[];
+  function resize(){ cv.width=innerWidth; cv.height=innerHeight; }
+  resize(); addEventListener('resize', resize);
+  var N = Math.min(90, Math.floor(innerWidth/16));
+  for(var i=0;i<N;i++){
+    pts.push({ x:Math.random()*innerWidth, y:Math.random()*innerHeight,
+      vx:(Math.random()-.5)*0.4, vy:(Math.random()-.5)*0.4, r:Math.random()*1.6+0.4 });
   }
-  tick(); setInterval(tick, 1000);
+  function draw(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    for(var i=0;i<pts.length;i++){
+      var p=pts[i]; p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0||p.x>cv.width) p.vx*=-1;
+      if(p.y<0||p.y>cv.height) p.vy*=-1;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,7); ctx.fillStyle='rgba(200,150,255,.8)'; ctx.fill();
+      for(var j=i+1;j<pts.length;j++){
+        var q=pts[j], dx=p.x-q.x, dy=p.y-q.y, d=dx*dx+dy*dy;
+        if(d<9000){
+          ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y);
+          ctx.strokeStyle='rgba(150,90,220,'+(0.14*(1-d/9000))+')'; ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
 
-  // ----- visitors (flavor) -----
-  document.getElementById('visitors').textContent = 1 + Math.floor(Math.random()*4);
+  function typer(el, phrases, speed){
+    var pi=0, ci=0, del=false;
+    (function step(){
+      var full=phrases[pi];
+      el.textContent = full.slice(0,ci);
+      if(!del && ci<full.length){ ci++; setTimeout(step, speed); }
+      else if(!del && ci===full.length){ del=true; setTimeout(step, 1600); }
+      else if(del && ci>0){ ci--; setTimeout(step, speed/2); }
+      else { del=false; pi=(pi+1)%phrases.length; setTimeout(step, 300); }
+    })();
+  }
+  typer(document.getElementById('gatesub'), ['a personal void','handmade · human · glowing'], 70);
+  typer(document.getElementById('tagline'), [
+    '> exploring the quiet parts of the internet_',
+    '> building small worlds after dark_',
+    '> no feeds. no noise. just this._'
+  ], 45);
 
-  // ----- page switching -----
-  var pages = document.querySelectorAll('.page');
-  var links = document.querySelectorAll('[data-page]');
-  function show(id){
-    pages.forEach(function(p){ p.classList.toggle('show', p.id === id); });
-    document.querySelectorAll('.sidebar a').forEach(function(a){
-      a.classList.toggle('active', a.dataset.page === id);
+  function nyTime(){
+    var s = new Date().toLocaleTimeString('en-US', {
+      timeZone:'America/New_York', hour:'numeric', minute:'2-digit', second:'2-digit', hour12:true
     });
-    window.scrollTo(0,0);
+    return s.replace(/\s?AM/i,' a.m.').replace(/\s?PM/i,' p.m.');
   }
-  links.forEach(function(a){
-    a.addEventListener('click', function(e){
-      e.preventDefault();
-      show(a.dataset.page);
+  var nyEl = document.getElementById('nytime');
+  function updNY(){ nyEl.textContent = nyTime(); }
+  updNY(); setInterval(updNY, 1000);
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  document.getElementById('enter').addEventListener('click', function(){
+    document.getElementById('gate').classList.add('gone');
+    document.getElementById('site').classList.add('show');
+  });
+
+  var tabs=document.querySelectorAll('nav.tabs button');
+  var secs=document.querySelectorAll('section.page');
+  tabs.forEach(function(b){
+    b.addEventListener('click', function(){
+      tabs.forEach(function(t){ t.classList.remove('active'); });
+      b.classList.add('active');
+      secs.forEach(function(s){ s.classList.toggle('show', s.id===b.dataset.tab); });
     });
   });
 </script>
