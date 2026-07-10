@@ -35,6 +35,16 @@
   }
   #cursor.big{ width:46px; height:46px; margin:-23px 0 0 -23px; }
 
+  #music{
+    position:fixed; bottom:18px; right:18px; z-index:9998;
+    width:44px; height:44px; border-radius:50%;
+    background:rgba(20,10,40,.6); border:1px solid var(--pur-deep); color:var(--pur-bright);
+    font-size:18px; cursor:none; display:flex; align-items:center; justify-content:center;
+    transition:all .25s;
+  }
+  #music:hover{ border-color:var(--pur); box-shadow:var(--glow); color:#fff; }
+  #music.off{ color:var(--pur-deep); }
+
   #gate{
     position:fixed; inset:0; z-index:100;
     display:flex; flex-direction:column; align-items:center; justify-content:center;
@@ -111,11 +121,6 @@
   .entry .date{ font-family:"Consolas",monospace; font-size:11px; letter-spacing:.15em; color:var(--pur-dim); }
   .entry h3{ color:#fff; font-size:19px; margin:4px 0 6px; }
 
-  .links{ display:flex; flex-wrap:wrap; gap:12px; margin-top:10px; }
-  .links a{ border:1px solid var(--pur-deep); padding:10px 20px; letter-spacing:.14em; font-size:13px;
-    text-transform:lowercase; transition:all .25s; }
-  .links a:hover{ color:#fff; border-color:var(--pur); box-shadow:var(--glow); background:rgba(180,108,255,.08); }
-
   footer{ margin-top:50px; padding-top:16px; border-top:1px solid var(--pur-deep);
     font-size:11px; letter-spacing:.2em; color:var(--pur-deep); text-align:center; text-transform:uppercase; }
 
@@ -126,6 +131,11 @@
 
 <canvas id="stars"></canvas>
 <div id="cursor"></div>
+
+<audio id="bgm" loop preload="auto">
+  <source src="song.mp3" type="audio/mpeg">
+</audio>
+<button id="music" class="off" title="toggle music">&#9834;</button>
 
 <div id="gate">
   <h1>joe's website</h1>
@@ -149,7 +159,7 @@
       <span class="lbl">my time currently is:</span>
       <span class="val" id="nytime">--:--:-- a.m.</span>
     </div>
-    <h2 class="head">welcome, wanderer.</h2>
+    <h2 class="head">welcome, hvher.</h2>
     <div class="tagline" id="tagline"></div>
     <p>hello i am <em>joe</em> and im the tf2 hvh king</p>
     <div class="grid">
@@ -238,9 +248,9 @@
     })();
   }
   typer(document.getElementById('tagline'), [
-    '> elder god heavying it 24/7 like damn_',
-    '> playing tf2 24/7 cus i can_',
-    '> mgeing 24/7 cus i can_'
+    '> exploring the quiet parts of the internet_',
+    '> building small worlds after dark_',
+    '> no feeds. no noise. just this._'
   ], 45);
 
   function nyTime(){
@@ -273,9 +283,24 @@
   }
   fetchStatus(); setInterval(fetchStatus, 30000);
 
+  var bgm = document.getElementById('bgm');
+  var musicBtn = document.getElementById('music');
+  bgm.volume = 0.35;
+  var musicOn = false;
+  function updateMusicBtn(){
+    musicBtn.classList.toggle('off', !musicOn);
+    musicBtn.innerHTML = musicOn ? '&#9835;' : '&#9834;';
+  }
+  musicBtn.addEventListener('click', function(){
+    if(musicOn){ bgm.pause(); musicOn = false; }
+    else { bgm.play().then(function(){ musicOn = true; updateMusicBtn(); }).catch(function(){}); }
+    updateMusicBtn();
+  });
+
   document.getElementById('enter').addEventListener('click', function(){
     document.getElementById('gate').classList.add('gone');
     document.getElementById('site').classList.add('show');
+    bgm.play().then(function(){ musicOn = true; updateMusicBtn(); }).catch(function(){});
   });
 
   var tabs=document.querySelectorAll('nav.tabs button');
