@@ -42,6 +42,7 @@
     background:rgba(20,10,40,.6); border:1px solid var(--pur-deep); color:var(--pur-bright);
     font-size:18px; cursor:none; display:flex; align-items:center; justify-content:center;
     transition:all .25s;
+    -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
   }
   #music:hover{ border-color:var(--pur); box-shadow:var(--glow); color:#fff; }
   #music.off{ color:var(--pur-deep); }
@@ -62,9 +63,10 @@
     text-transform:uppercase; min-height:18px; }
   #enter{
     margin-top:46px; font:inherit; font-size:15px; letter-spacing:.3em; text-transform:uppercase;
-    color:var(--pur-bright); background:transparent; border:1px solid var(--pur-dim);
+    color:var(--pur-bright); background:rgba(20,10,40,.3); border:1px solid var(--pur-dim);
     padding:14px 42px; cursor:none; position:relative; overflow:hidden;
     transition:color .3s, border-color .3s, box-shadow .3s, letter-spacing .3s;
+    -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
   }
   #enter:hover{ color:#fff; border-color:var(--pur); box-shadow:var(--glow); letter-spacing:.42em; }
 
@@ -92,8 +94,9 @@
   nav.tabs{ display:flex; flex-wrap:wrap; gap:6px; margin:18px 0 26px; }
   nav.tabs button{
     font:inherit; font-size:13px; letter-spacing:.18em; text-transform:uppercase;
-    background:transparent; color:var(--pur-dim); border:1px solid transparent;
+    background:rgba(20,10,40,.3); color:var(--pur-dim); border:1px solid transparent;
     padding:8px 16px; cursor:none; transition:all .25s;
+    -webkit-backdrop-filter:blur(5px); backdrop-filter:blur(5px);
   }
   nav.tabs button:hover{ color:var(--pur-bright); text-shadow:0 0 8px var(--pur); }
   nav.tabs button.active{ color:#fff; border-color:var(--pur-deep);
@@ -199,16 +202,12 @@
 
 <script>
   var cur = document.getElementById('cursor');
-  var cx=innerWidth/2, cy=innerHeight/2, tx=cx, ty=cy;
-  addEventListener('mousemove', function(e){ tx=e.clientX; ty=e.clientY; });
+  addEventListener('mousemove', function(e){
+    cur.style.transform = 'translate('+e.clientX+'px,'+e.clientY+'px)';
+  });
   document.addEventListener('mouseover', function(e){
     if(e.target.closest('button,a,.card')) cur.classList.add('big'); else cur.classList.remove('big');
   });
-  (function follow(){
-    cx += (tx-cx)*0.2; cy += (ty-cy)*0.2;
-    cur.style.transform = 'translate('+cx+'px,'+cy+'px)';
-    requestAnimationFrame(follow);
-  })();
 
   var cv = document.getElementById('stars'), ctx = cv.getContext('2d'), pts=[];
   function resize(){ cv.width=innerWidth; cv.height=innerHeight; }
